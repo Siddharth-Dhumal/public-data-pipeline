@@ -1,23 +1,14 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
+from typing import Iterable
+from pipeline.domain.models import WeatherSample, EarthquakeEvent
 
-from dataclasses import dataclass
+class WeatherExtractor(ABC):
+    @abstractmethod
+    def fetch(self) -> Iterable[WeatherSample]:
+        raise NotImplementedError
 
-from pipeline.ports.extractors import WeatherExtractor
-from pipeline.ports.repositories import WeatherRepository
-
-
-@dataclass(frozen=True)
-class IngestResult:
-    fetched: int
-    upserted: int
-
-
-class IngestWeatherService:
-    def __init__(self, extractor: WeatherExtractor, repository: WeatherRepository) -> None:
-        self._extractor = extractor
-        self._repository = repository
-
-    def run(self) -> IngestResult:
-        samples = list(self._extractor.fetch())
-        upserted = self._repository.upsert_many(samples)
-        return IngestResult(fetched=len(samples), upserted=upserted)
+class EarthquakeExtractor(ABC):
+    @abstractmethod
+    def fetch(self) -> Iterable[EarthquakeEvent]:
+        raise NotImplementedError
