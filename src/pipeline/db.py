@@ -24,6 +24,7 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
+@contextmanager
 def safe_session(existing_session: Optional[Session] = None) -> Iterator[Session]:
     if existing_session is not None:
         yield existing_session
